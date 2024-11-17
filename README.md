@@ -224,13 +224,13 @@ class ramSpec extends AnyFreeSpec with ChiselScalatestTester {
       def d(i: Int) = VAR(s"data_variable${i}", width)
       var ant: trajFormula = is_bv(dut.io.readAdr, a)
       for (i <- 0 until math.pow(2, addr_size).toInt) {
-        ant = ant && is_array(dut.mem, memdata(i), i, width - 1, 0)
+        ant = ant && is_array(dut.mem, d(i), i, width - 1, 0)
       }
       ant = at_cycle(ant, 0)
       val cons_array = new ArrayBuffer[trajFormula]()
       for (i <- 0 until math.pow(2, addr_size).toInt) {
         var guard = EQUAL(addr, BV_CONST(i, addr_size))
-        cons_array += Imply(guard, is_bv(dut.io.dataOut, memdata(i)))
+        cons_array += Imply(guard, is_bv(dut.io.dataOut, d(i)))
       }
       var cons:trajFormula = cons_array.reduce(_ && _)
       cons = at_cycle(cons, 0)
