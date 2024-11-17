@@ -192,7 +192,7 @@ class ander2SPec extends AnyFreeSpec with ChiselScalatestTester {
 
 ### Motivated Case 2
 
-We use another example(RAM) to illustrate. This is a simple RAM, which allows for writing data to a specified address and reading data from a specified address.
+We use another example(RAM) to illustrate (code in package ram). This is a simple RAM, which allows for writing data to a specified address and reading data from a specified address.
 
 ```scala
 class RAM(size:Int,width:Int) extends Module {
@@ -211,7 +211,7 @@ Now, we want to verify the specification "the data read from the RAM is indeed c
 
 For VOSSII, the specification is as follows (notation / the scala code of the notation):
 
-![image-20241117201605645](./assets/image-20241117201605645.png)
+![image-20241117204410385](./assets/image-20241117204410385.png)
 
 ```scala
 class ramSpec extends AnyFreeSpec with ChiselScalatestTester {
@@ -249,11 +249,11 @@ It can be observed that a notable characteristic of this specification is the ne
 
 For SMT, we can certainly adopt the same specification as before. However, thanks to the BV theory in SMT, we can provide a more simplified description of the same specification, and we can use the symbol to encode array indices, shown as follows (notation / the scala code of the notation):
 
-![image-20241117202152491](./assets/image-20241117202152491.png)
+![image-20241117204420195](./assets/image-20241117204420195.png)
 
 ```scala
 class ramSpecArrayIndex extends AnyFreeSpec with ChiselScalatestTester {
-  "ram lunwen pass" in {
+  "ram pass" in {
     val width = 2;
     val size = 8;
     test(new RAM(size, width)) { dut =>
