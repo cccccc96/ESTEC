@@ -185,7 +185,7 @@ object is_fixedpoint {
 class is_array(
     val node: Any,
     val v: Any,
-    var idx: Int,
+    var idx: Any,
     var left: Int,
     var right: Int
 ) extends trajFormula {
@@ -208,10 +208,21 @@ class is_array(
       case _                             => "invalid type"
     }
     node match {
-      case node: Chisel.Vec[Chisel.UInt] => nodeExpr = s"${nodeExpr}_${idx}"
-      case node: Chisel.Mem[Chisel.UInt] => nodeExpr = s"${nodeExpr}_${idx}_"
-      case _                             => "invalid type"
+      case node: Chisel.Vec[Chisel.UInt] =>
+        idx match {
+          case i: Int => nodeExpr = s"${nodeExpr}_${i}"
+          case s: VAR => nodeExpr = s"${nodeExpr}_${s.eval1()}"
+          case _ => nodeExpr = "invalid idx type"
+        }
+      case node: Chisel.Mem[Chisel.UInt] =>
+        idx match {
+          case i: Int => nodeExpr = s"${nodeExpr}_${i}_"
+          case s: VAR => nodeExpr = s"${nodeExpr}_${s.eval1()}_"
+          case _ => nodeExpr = "invalid idx type"
+        }
+      case _ => nodeExpr = "invalid node type"
     }
+
     // nodeExpr = s"${nodeExpr}_${idx}_"
     var valExpr = Util.var_toString_1(v)
     s"$nodeExpr[$left:$right],$valExpr,$t"
@@ -239,7 +250,7 @@ object is_array {
   def apply(
       node: Any,
       v: Any,
-      idx: Int,
+      idx: Any,
       left: Int,
       right: Int
   ) = new is_array(node, v, idx, left, right)
